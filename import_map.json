@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "opine": "https://deno.land/x/opine@1.1.0/mod.ts",
+    "nanoid": "https://deno.land/x/nanoid/mod.ts"
+  }
+}
