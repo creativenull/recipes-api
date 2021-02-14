@@ -1,0 +1,9 @@
+<% layout('./layouts/base') %>
+
+<div class="container">
+    <ul>
+        <% for (item of it.recipes) { %>
+            <li><%= item.title %></li>
+        <% } %>
+    </ul>
+</div>
