@@ -1,0 +1,22 @@
+<!-- TODO: Edit the single recipe, use React -->
+<% layout('./layouts/base') %>
+
+<div class="container">
+    <h1>Edit Recipe</h1>
+    <div id="form-app"></div>
+</div>
+
+<script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+<script type="module">
+    import htm from 'https://unpkg.com/htm?module'
+    const html = htm.bind(React.createElement)
+
+    function App() {
+        return html`
+            <h2>Hello from React</h2>
+        `
+    }
+
+    ReactDOM.render(html`<${App} />`, document.getElementById('form-app'))
+</script>

@@ -9,10 +9,12 @@ import config from '../config.ts'
  *
  * @return {Promise<string>}
  */
-async function getTemplateContents(templateName: string): Promise<string> {
+async function getTemplateContents (templateName: string): Promise<string> {
   const decoder = new TextDecoder('utf-8')
   try {
-    const data = await Deno.readFile(`${config.basePath}/src/templates/${templateName}.eta`)
+    const data = await Deno.readFile(
+      `${config.basePath}/src/templates/${templateName}.eta`
+    )
     return decoder.decode(data)
   } catch (e) {
     return ''
@@ -29,7 +31,7 @@ async function getTemplateContents(templateName: string): Promise<string> {
  *
  * @return {Promise<string>}
  */
-export async function render<T extends object>(
+export async function render<T extends object> (
   templateName: string,
   props: T,
   response: Response<any>

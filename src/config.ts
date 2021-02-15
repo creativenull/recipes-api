@@ -1,5 +1,5 @@
 type AppConfig = {
-  basePath: string,
+  basePath: string
   appName: string
 }
 
