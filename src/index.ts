@@ -1,6 +1,5 @@
 import { json, urlencoded, opine } from 'opine'
 import db from './database/index.ts'
-import Recipe from './app/models/recipe.ts'
 import router from './router/index.ts'
 import * as eta from 'eta'
 import config from './config.ts'
@@ -9,7 +8,6 @@ import config from './config.ts'
 const app = opine()
 
 // DB Instance/connection/links
-db.link([Recipe])
 db.sync()
 
 // App plugins
