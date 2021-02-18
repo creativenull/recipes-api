@@ -1,4 +1,4 @@
-type AppConfig = {
+interface AppConfig {
   basePath: string
   appName: string
 }

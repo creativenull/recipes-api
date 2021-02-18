@@ -1,5 +1,4 @@
 import { Model, DataTypes } from 'denodb'
-import db from '../../database/index.ts'
 
 class Recipe extends Model {
   static table = 'recipes'
@@ -14,7 +13,5 @@ class Recipe extends Model {
     steps: DataTypes.STRING
   }
 }
-
-db.link([Recipe])
 
 export default Recipe

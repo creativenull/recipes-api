@@ -1,5 +1,6 @@
 import { Database, MongoDBConnector } from 'denodb'
 import { config } from 'dotenv'
+import Recipe from '../app/models/recipe.ts'
 
 const env = config()
 const connector = new MongoDBConnector({
@@ -9,5 +10,7 @@ const connector = new MongoDBConnector({
   // password: env.DB_PASSWORD
 })
 const db = new Database(connector)
+
+db.link([Recipe])
 
 export default db

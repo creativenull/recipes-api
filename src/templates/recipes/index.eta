@@ -2,8 +2,8 @@
 
 <div class="container">
     <ul>
-        <% for (item of it.recipes) { %>
-            <li><%= item.title %></li>
+        <% for (const recipe of it.recipes) { %>
+            <li><%= recipe.name %> - <a href="/recipes/<%= recipe.uuid %>">Open</a></li>
         <% } %>
     </ul>
 </div>
