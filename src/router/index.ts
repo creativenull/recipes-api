@@ -13,7 +13,7 @@ router.get('/', async (_, res) =>
 // Recipes CRUD
 router.get('/recipes', RecipeController.index)
 router.get('/recipes/create', RecipeController.create)
-router.get('/recipes/edit', RecipeController.edit)
+router.get('/recipes/edit/:id', RecipeController.edit)
 router.get('/recipes/:id', RecipeController.read)
 router.put('/recipes/:id', RecipeController.update)
 router.delete('/recipes/:id', RecipeController.delete)

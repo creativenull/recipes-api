@@ -15,9 +15,10 @@ app.use(json())
 app.use(urlencoded())
 
 // App templating
+const basePath: string = config.basePath
 eta.configure({
   cache: true,
-  views: `${config.basePath}/src/templates`
+  views: `${basePath}/src/templates`
 })
 
 // App Routes
