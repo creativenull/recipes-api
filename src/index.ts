@@ -1,8 +1,7 @@
 import { json, urlencoded, opine } from 'opine'
+import { opineCors } from 'cors'
 import db from './database/index.ts'
-import router from './router/index.ts'
-import * as eta from 'eta'
-import config from './config.ts'
+import { recipeRoutes } from './router/index.ts'
 
 // Main app instance
 const app = opine()
@@ -13,15 +12,9 @@ db.sync()
 // App plugins
 app.use(json())
 app.use(urlencoded())
-
-// App templating
-const basePath: string = config.basePath
-eta.configure({
-  cache: true,
-  views: `${basePath}/src/templates`
-})
+app.use(opineCors())
 
 // App Routes
-app.use('/', router)
+app.use('/api', recipeRoutes)
 
 app.listen(8080)

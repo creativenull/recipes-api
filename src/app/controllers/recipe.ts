@@ -1,15 +1,12 @@
 import { customAlphabet } from 'nanoid'
 import { Request, Response } from 'opine'
-import { render } from '../render.ts'
 import { Model } from 'denodb'
 import Recipe from '../models/recipe.ts'
 
 const RecipeController = {
   async index (_: Request, res: Response<any>) {
     const recipes = await Recipe.all()
-    res.send(
-      await render('recipes/index', { title: 'Recipes App', recipes }, res)
-    )
+    res.json(recipes)
   },
 
   async create (_: Request, res: Response<any>) {
@@ -30,36 +27,31 @@ const RecipeController = {
         ingredients: 'dough,sauce,chicken,cheese',
         steps: 'chicken,cheese,sauce on top of dough and bake'
       })
-      res.setStatus(200)
-      res.send('Created Resource')
+      res.json({ status: 'success', message: 'Successfully generated' })
     } catch (e) {
       res.setStatus(500)
-      res.send()
+      res.json({ status: 'error', message: 'Failed to create' })
     }
   },
 
   async read (req: Request, res: Response<any>) {
     const uuid = req.params.id
     const [recipe] = (await Recipe.where({ uuid }).get()) as Model[]
-    res.send(await render('recipes/single', { title: 'Recipe', recipe }, res))
-  },
-
-  // TODO
-  // Add edit page
-  async edit (req: Request, res: Response<any>) {
-    res.send(await render('recipes/edit', { title: 'Edit Recipe', id: req.params.id }, res))
+    res.json(recipe)
   },
 
   // TODO
   // Add edit resource
-  update (_: Request, res: Response<any>) {
-    res.send('Update Resource')
+  update (req: Request, res: Response<any>) {
+    const body = req.body
+    res.json(body)
   },
 
   // TODO
   // Add delete resource
-  delete (_: Request, res: Response<any>) {
-    res.send('Delete Resource')
+  delete (req: Request, res: Response<any>) {
+    const body = req.body
+    res.json(body)
   }
 }
 
