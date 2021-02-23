@@ -1,5 +1,0 @@
-<% layout('./layouts/base') %>
-
-<div class="container">
-    <a href="/recipes">Recipes</a>
-</div>

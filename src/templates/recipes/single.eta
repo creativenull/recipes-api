@@ -1,7 +1,0 @@
-<% layout('./layouts/base') %>
-
-<div class="container">
-    <h1><%= it.recipe.name %></h1>
-    <h2><%= it.recipe.ingredients %></h2>
-    <p><%= it.recipe.steps %></p>
-</div>
