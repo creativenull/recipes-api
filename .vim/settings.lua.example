@@ -1,0 +1,47 @@
+local lsp = require 'lspconfig'
+local lsp_status = require 'lsp-status'
+local ts_standard = require 'creativenull.plugins.config.lsp.diagnosticls.linters.ts_standard'
+local ts_standard_fixer = require 'creativenull.plugins.config.lsp.diagnosticls.formatters.ts_standard_fixer'
+lsp.diagnosticls.setup {
+  on_attach = LSPOnAttach,
+  capabilities = lsp_status.capabilities,
+  filetypes = { 'typescript' },
+  root_dir = lsp.util.root_pattern('.git', '.gitignore'),
+  init_options = {
+    filetypes = {
+      typescript = 'ts_standard',
+      typescriptreact = 'ts_standard'
+    },
+    formatFiletypes = {
+      typescript = 'ts_standard_fixer',
+      typescriptreact = 'ts_standard_fixer'
+    },
+    linters = {
+      ts_standard = ts_standard
+    },
+    formatters = {
+      ts_standard_fixer = ts_standard_fixer
+    }
+  }
+}
+
+lsp.tsserver.setup {
+  on_attach = LSPOnAttach,
+  capabilities = lsp_status.capabilities,
+  filetypes = { 'javascript' ,'javascriptreact' },
+  root_dir = lsp.util.root_pattern('.tsserver')
+}
+
+lsp.denols.setup {
+  on_attach = LSPOnAttach,
+  capabilities = lsp_status.capabilities,
+  filetypes = { 'typescript' },
+  init_options = {
+    enable = true,
+    unstable = true,
+    importMap = './import_map.json'
+  },
+  root_dir = lsp.util.root_pattern('.denols')
+}
+
+vim.cmd 'au! BufRead,BufNewFile *.eta setlocal filetype=html'
