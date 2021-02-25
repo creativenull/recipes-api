@@ -1,3 +1,9 @@
+/*
+ * TODO
+ * fix bg color with the whole page, even on scroll
+ */
 body {
   background: #F3F4F6;
+  height: 100%;
+  min-height: 100vh;
 }
