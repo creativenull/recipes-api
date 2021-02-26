@@ -1,30 +1,16 @@
-import { json, opine } from 'opine'
-import { opineCors } from 'cors'
+import { Application } from 'abc'
+import { cors } from 'abc/middleware/cors'
 import db from './database/index.ts'
-import { recipeRoutes } from './router/index.ts'
+import { recipeRoutesGroup } from './router/index.ts'
+const app = new Application()
 
-// Main app instance
-const app = opine()
-
-// DB Instance/connection/links
+// DB
 db.sync()
 
-// TODO
-// FIX THE DAMN CORS
-// App plugins
-app.use(opineCors())
+// Middlewars
+app.use(cors())
 
-// app.use((req, res, next) => {
-//   // @ts-ignore
-//   res.headers['Access-Control-Allow-Origin'] = '*'
-//   // @ts-ignore
-//   res.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept'
-//   next()
-// })
+// Routes
+recipeRoutesGroup(app.group('recipes'))
 
-app.use(json())
-
-// App Routes
-app.use('/api', recipeRoutes)
-
-app.listen(8080)
+app.start({ port: 8080 })

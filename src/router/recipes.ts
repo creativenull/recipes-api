@@ -1,18 +1,12 @@
-import { Router } from 'opine'
+import { Group } from 'abc'
 import RecipeController from '../app/controllers/recipe.ts'
 
-export const recipeRoutes = Router({
-  caseSensitive: true
-})
-  // Recipes CRUD
-  .get('/recipes', RecipeController.index)
-  .post('/recipes', RecipeController.create)
-  .get('/recipes/:id', RecipeController.read)
-  .put('/recipes/:id', RecipeController.update)
-  .delete('/recipes/:id', RecipeController.delete)
+export const recipeRoutesGroup = (group: Group): void => {
+  group.prefix = '/api'
 
-  // Fallback 404
-  .all('*', async (_, res) => {
-    res.setStatus(404)
-    res.json({ status: 'error', message: 'Not Found' })
-  })
+  group.get('/recipes', RecipeController.index)
+  group.post('/recipes', RecipeController.create)
+  group.get('/recipes/:id', RecipeController.read)
+  group.put('/recipes/:id', RecipeController.update)
+  group.delete('/recipes/:id', RecipeController.delete)
+}

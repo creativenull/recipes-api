@@ -1,15 +1,29 @@
+import { HandlerFunc, Context, InternalServerErrorException, BadRequestException } from 'abc'
 import { customAlphabet } from 'nanoid'
-import { Request, Response } from 'opine'
 import { Model } from 'denodb'
 import Recipe from '../models/recipe.ts'
 
-const RecipeController = {
-  async index (_: Request, res: Response<any>) {
+interface UpdateRequestBody {
+  name: string
+  ingredients: string
+  steps: string
+}
+
+interface RecipeControllerMethods {
+  index: HandlerFunc
+  create: HandlerFunc
+  read: HandlerFunc
+  update: HandlerFunc
+  delete: HandlerFunc
+}
+
+const RecipeController: RecipeControllerMethods = {
+  async index () {
     const recipes = await Recipe.all()
-    res.json(recipes)
+    return recipes
   },
 
-  async create (_: Request, res: Response<any>) {
+  async create () {
     try {
       const isPizzaOrBurgerOrBoth = Math.random()
       let name: string
@@ -27,31 +41,49 @@ const RecipeController = {
         ingredients: 'dough,sauce,chicken,cheese',
         steps: 'chicken,cheese,sauce on top of dough and bake'
       })
-      res.json({ status: 'success', message: 'Successfully generated' })
+
+      return {
+        status: 'success',
+        message: 'Successfully generated'
+      }
     } catch (e) {
-      res.setStatus(500)
-      res.json({ status: 'error', message: 'Failed to create' })
+      throw new InternalServerErrorException()
     }
   },
 
-  async read (req: Request, res: Response<any>) {
-    const uuid = req.params.id
+  async read (c: Context) {
+    const uuid = c.params.id
     const [recipe] = (await Recipe.where({ uuid }).get()) as Model[]
-    res.json(recipe)
+    return recipe
   },
 
-  // TODO
-  // Add edit resource
-  update (req: Request, res: Response<any>) {
-    const body = req.body
-    res.json(body)
+  async update (c: Context) {
+    const uuid = c.params.id
+    const data = JSON.parse(await c.body as string) as UpdateRequestBody
+
+    if (data.name !== undefined || data.ingredients !== undefined || data.steps !== undefined) {
+      const recipeResults = (await Recipe.where({ uuid }).get()) as Model[]
+
+      const recipe = recipeResults[0]
+      recipe.name = data.name ?? recipe.name
+      recipe.ingredients = data.ingredients ?? recipe.ingredients
+      recipe.steps = data.steps ?? recipe.steps
+
+      await recipe.update()
+
+      return recipe
+    }
+
+    throw new BadRequestException()
   },
 
-  // TODO
-  // Add delete resource
-  delete (req: Request, res: Response<any>) {
-    const body = req.body
-    res.json(body)
+  async delete (c: Context) {
+    const uuid = c.params.id
+    const recipeResults = (await Recipe.where({ uuid }).get()) as Model[]
+    const recipe = recipeResults[0]
+    await recipe.delete()
+
+    return recipe
   }
 }
 
