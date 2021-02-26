@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, useHistory, Link } from 'react-router-dom'
 
 function RecipeEditView() {
   const { id } = useParams()
+  const routeHistory = useHistory()
   const [recipe, setRecipe] = useState({})
 
   useEffect(() => {
@@ -19,18 +20,37 @@ function RecipeEditView() {
     }))
   }
 
+  const onClickDeleteHandler = (e) => {
+    e.preventDefault()
+    const confirmed = window.confirm('Are you sure, you want to delete?')
+    if (confirmed) {
+      fetch(`http://localhost:8080/api/recipes/${id}`, {
+        method: 'DELETE'
+      })
+        .then(res => {
+          if (res.status === 200) {
+            routeHistory.push('/')
+          }
+        })
+        .catch(e => console.log(e))
+    }
+  }
+
   const onSubmitHandler = (e) => {
     e.preventDefault()
     fetch(`http://localhost:8080/api/recipes/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(recipe),
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      }
+      body: JSON.stringify({
+        name: recipe.name,
+        ingredients: recipe.ingredients,
+        steps: recipe.steps
+      })
     })
-      .then(res => res.json())
-      .then(res => console.log(res))
+      .then(res => {
+        if (res.status === 200) {
+          routeHistory.push(`/show/${id}`)
+        }
+      })
       .catch(e => console.log(e))
   }
 
@@ -77,9 +97,14 @@ function RecipeEditView() {
                 </div>
               </div>
 
-              <div>
-                <Link className="button mr-4" to={'/'}>Cancel</Link>
-                <button className="button is-success" type="submit">Save Changes</button>
+              <div className="columns">
+                <div className="column is-half">
+                  <Link className="button mr-4" to={'/'}>Back</Link>
+                  <button className="button is-success" type="submit">Save Changes</button>
+                </div>
+                <div className="column is-half is-flex is-justify-content-flex-end">
+                  <button className="button is-danger" onClick={onClickDeleteHandler}>Delete</button>
+                </div>
               </div>
             </form>
           </div>
