@@ -1,7 +1,5 @@
 import { HandlerFunc, Context, InternalServerErrorException, BadRequestException } from 'abc'
 import { customAlphabet } from 'nanoid'
-import { Model } from 'denodb'
-import Recipe from '../models/recipe.ts'
 
 interface UpdateRequestBody {
   name: string
@@ -17,74 +15,77 @@ interface RecipeControllerMethods {
   delete: HandlerFunc
 }
 
+let store = {
+  recipes: [
+    {
+      name: 'Pizza 0',
+      uuid: customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 10)(),
+      ingredients: 'dough,sauce,chicken,cheese',
+      steps: 'chicken,cheese,sauce on top of dough and bake'
+    },
+    {
+      name: 'Pizza 1',
+      uuid: customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 10)(),
+      ingredients: 'dough,sauce,chicken,cheese',
+      steps: 'chicken,cheese,sauce on top of dough and bake'
+    },
+    {
+      name: 'Pizza 2',
+      uuid: customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 10)(),
+      ingredients: 'dough,sauce,chicken,cheese',
+      steps: 'chicken,cheese,sauce on top of dough and bake'
+    },
+    {
+      name: 'Pizza 3',
+      uuid: customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 10)(),
+      ingredients: 'dough,sauce,chicken,cheese',
+      steps: 'chicken,cheese,sauce on top of dough and bake'
+    },
+  ],
+}
+
 const RecipeController: RecipeControllerMethods = {
-  async index () {
-    const recipes = await Recipe.all()
-    return recipes
+  async index() {
+    return store.recipes
   },
 
-  async create () {
-    try {
-      const isPizzaOrBurgerOrBoth = Math.random()
-      let name: string
-      if (isPizzaOrBurgerOrBoth >= 0.3) {
-        name = 'Pizza'
-      } else if (isPizzaOrBurgerOrBoth < 0.3 && isPizzaOrBurgerOrBoth >= 0.6) {
-        name = 'Burger'
-      } else {
-        name = 'PizzaBurger'
-      }
-
-      await Recipe.create({
-        name,
-        uuid: customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 10)(),
-        ingredients: 'dough,sauce,chicken,cheese',
-        steps: 'chicken,cheese,sauce on top of dough and bake'
-      })
-
-      return {
-        status: 'success',
-        message: 'Successfully generated'
-      }
-    } catch (e) {
-      throw new InternalServerErrorException()
-    }
+  async create() {
+    return null
   },
 
-  async read (c: Context) {
+  async read(c: Context) {
     const uuid = c.params.id
-    const [recipe] = (await Recipe.where({ uuid }).get()) as Model[]
+    const [recipe] = store.recipes.filter(item => item.uuid === uuid)
     return recipe
   },
 
-  async update (c: Context) {
+  async update(c: Context) {
     const uuid = c.params.id
-    const data = JSON.parse(await c.body as string) as UpdateRequestBody
+    const data = await c.body as UpdateRequestBody
 
     if (data.name !== undefined || data.ingredients !== undefined || data.steps !== undefined) {
-      const recipeResults = (await Recipe.where({ uuid }).get()) as Model[]
+      let [recipeResults] = store.recipes.filter(item => item.uuid === uuid)
 
-      const recipe = recipeResults[0]
+      let recipe = recipeResults
       recipe.name = data.name ?? recipe.name
       recipe.ingredients = data.ingredients ?? recipe.ingredients
       recipe.steps = data.steps ?? recipe.steps
 
-      await recipe.update()
+      const ind = store.recipes.findIndex(item => item.uuid === uuid)
+      store.recipes[ind] = {
+        ...store.recipes[ind],
+        ...recipe
+      }
 
       return recipe
     }
 
-    throw new BadRequestException()
+    return null
   },
 
-  async delete (c: Context) {
-    const uuid = c.params.id
-    const recipeResults = (await Recipe.where({ uuid }).get()) as Model[]
-    const recipe = recipeResults[0]
-    await recipe.delete()
-
-    return recipe
-  }
+  async delete(c: Context) {
+    return true
+  },
 }
 
 export default RecipeController
