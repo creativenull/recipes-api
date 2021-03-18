@@ -4,6 +4,10 @@
     "abc/middleware/cors": "https://deno.land/x/abc@v1.2.6/middleware/cors.ts",
     "nanoid": "https://deno.land/x/nanoid@v3.0.0/mod.ts",
     "denodb": "https://deno.land/x/denodb/mod.ts",
-    "dotenv": "https://deno.land/x/dotenv/mod.ts"
+    "dotenv": "https://deno.land/x/dotenv/mod.ts",
+    "gql": "https://deno.land/x/gql/mod.ts",
+    "graphql_deno": "https://deno.land/x/graphql_deno/mod.ts",
+    "deno_graphql/abc": "https://deno.land/x/deno_graphql/abc.ts",
+    "tinyhttp": "https://deno.land/x/tinyhttp/mod.ts"
   }
 }

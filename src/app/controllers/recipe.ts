@@ -1,4 +1,4 @@
-import { HandlerFunc, Context, InternalServerErrorException, BadRequestException } from 'abc'
+import { HandlerFunc, Context } from 'abc'
 import { customAlphabet } from 'nanoid'
 
 interface UpdateRequestBody {
@@ -15,7 +15,7 @@ interface RecipeControllerMethods {
   delete: HandlerFunc
 }
 
-let store = {
+const store = {
   recipes: [
     {
       name: 'Pizza 0',
@@ -40,33 +40,33 @@ let store = {
       uuid: customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 10)(),
       ingredients: 'dough,sauce,chicken,cheese',
       steps: 'chicken,cheese,sauce on top of dough and bake'
-    },
-  ],
+    }
+  ]
 }
 
 const RecipeController: RecipeControllerMethods = {
-  async index() {
+  async index () {
     return store.recipes
   },
 
-  async create() {
+  async create () {
     return null
   },
 
-  async read(c: Context) {
+  async read (c: Context) {
     const uuid = c.params.id
     const [recipe] = store.recipes.filter(item => item.uuid === uuid)
     return recipe
   },
 
-  async update(c: Context) {
+  async update (c: Context) {
     const uuid = c.params.id
     const data = await c.body as UpdateRequestBody
 
     if (data.name !== undefined || data.ingredients !== undefined || data.steps !== undefined) {
-      let [recipeResults] = store.recipes.filter(item => item.uuid === uuid)
+      const [recipeResults] = store.recipes.filter(item => item.uuid === uuid)
 
-      let recipe = recipeResults
+      const recipe = recipeResults
       recipe.name = data.name ?? recipe.name
       recipe.ingredients = data.ingredients ?? recipe.ingredients
       recipe.steps = data.steps ?? recipe.steps
@@ -83,9 +83,9 @@ const RecipeController: RecipeControllerMethods = {
     return null
   },
 
-  async delete(c: Context) {
+  async delete (c: Context) {
     return true
-  },
+  }
 }
 
 export default RecipeController
