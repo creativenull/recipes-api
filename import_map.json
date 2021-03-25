@@ -8,6 +8,8 @@
     "gql": "https://deno.land/x/gql/mod.ts",
     "graphql_deno": "https://deno.land/x/graphql_deno/mod.ts",
     "deno_graphql/abc": "https://deno.land/x/deno_graphql/abc.ts",
-    "tinyhttp": "https://deno.land/x/tinyhttp/mod.ts"
+    "tinyhttp": "https://deno.land/x/tinyhttp/mod.ts",
+    "fake_gen": "https://deno.land/x/fake_gen@v1.11.0/main.ts",
+    "deno_gen": "https://deno.land/x/deno_faker@v1.0.3/mod.ts"
   }
 }

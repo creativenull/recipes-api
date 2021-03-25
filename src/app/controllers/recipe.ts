@@ -1,91 +1,45 @@
-import { HandlerFunc, Context } from 'abc'
-import { customAlphabet } from 'nanoid'
+import store, { Recipe } from '../../gql/store.ts'
+import uuid from '../../gql/utils.ts'
 
-interface UpdateRequestBody {
-  name: string
-  ingredients: string
-  steps: string
-}
-
-interface RecipeControllerMethods {
-  index: HandlerFunc
-  create: HandlerFunc
-  read: HandlerFunc
-  update: HandlerFunc
-  delete: HandlerFunc
-}
-
-const store = {
-  recipes: [
-    {
-      name: 'Pizza 0',
-      uuid: customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 10)(),
-      ingredients: 'dough,sauce,chicken,cheese',
-      steps: 'chicken,cheese,sauce on top of dough and bake'
-    },
-    {
-      name: 'Pizza 1',
-      uuid: customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 10)(),
-      ingredients: 'dough,sauce,chicken,cheese',
-      steps: 'chicken,cheese,sauce on top of dough and bake'
-    },
-    {
-      name: 'Pizza 2',
-      uuid: customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 10)(),
-      ingredients: 'dough,sauce,chicken,cheese',
-      steps: 'chicken,cheese,sauce on top of dough and bake'
-    },
-    {
-      name: 'Pizza 3',
-      uuid: customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 10)(),
-      ingredients: 'dough,sauce,chicken,cheese',
-      steps: 'chicken,cheese,sauce on top of dough and bake'
-    }
-  ]
-}
-
-const RecipeController: RecipeControllerMethods = {
-  async index () {
+const controller = {
+  recipes (): Recipe[] {
     return store.recipes
   },
 
-  async create () {
-    return null
+  recipe (ctx: { id: string }): Recipe | null {
+    const results = store.recipes.filter((item) => item.uuid === ctx.id)
+    return results.length === 0 ? null : results[0]
   },
 
-  async read (c: Context) {
-    const uuid = c.params.id
-    const [recipe] = store.recipes.filter(item => item.uuid === uuid)
-    return recipe
+  createRecipe (ctx: { input: Recipe }): Recipe {
+    const recipe: Recipe = { ...ctx.input, uuid: uuid() }
+    store.recipes.push(recipe)
+    return store.recipes[store.recipes.length - 1]
   },
 
-  async update (c: Context) {
-    const uuid = c.params.id
-    const data = await c.body as UpdateRequestBody
-
-    if (data.name !== undefined || data.ingredients !== undefined || data.steps !== undefined) {
-      const [recipeResults] = store.recipes.filter(item => item.uuid === uuid)
-
-      const recipe = recipeResults
-      recipe.name = data.name ?? recipe.name
-      recipe.ingredients = data.ingredients ?? recipe.ingredients
-      recipe.steps = data.steps ?? recipe.steps
-
-      const ind = store.recipes.findIndex(item => item.uuid === uuid)
-      store.recipes[ind] = {
-        ...store.recipes[ind],
-        ...recipe
+  updateRecipe (ctx: { id: string, input: Recipe }): Recipe | null {
+    const index = store.recipes.findIndex((item) => item.uuid === ctx.id)
+    if (index !== -1) {
+      store.recipes[index] = {
+        ...store.recipes[index],
+        ...ctx.input
       }
 
-      return recipe
+      return store.recipes[index]
     }
 
     return null
   },
 
-  async delete (c: Context) {
-    return true
+  deleteRecipe (ctx: { id: string }): boolean {
+    const index = store.recipes.findIndex((item) => item.uuid === ctx.id)
+    if (index !== -1) {
+      store.recipes.splice(index, 1)
+      return true
+    }
+
+    return false
   }
 }
 
-export default RecipeController
+export default controller

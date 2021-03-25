@@ -1,34 +1,5 @@
 import { buildSchema } from 'graphql_deno'
-import { customAlphabet } from 'nanoid'
-
-const store = {
-  recipes: [
-    {
-      name: 'Pizza 0',
-      uuid: customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 10)(),
-      ingredients: 'dough,sauce,chicken,cheese',
-      steps: 'chicken,cheese,sauce on top of dough and bake'
-    },
-    {
-      name: 'Pizza 1',
-      uuid: customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 10)(),
-      ingredients: 'dough,sauce,chicken,cheese',
-      steps: 'chicken,cheese,sauce on top of dough and bake'
-    },
-    {
-      name: 'Pizza 2',
-      uuid: customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 10)(),
-      ingredients: 'dough,sauce,chicken,cheese',
-      steps: 'chicken,cheese,sauce on top of dough and bake'
-    },
-    {
-      name: 'Pizza 3',
-      uuid: customAlphabet('1234567890qwertyuiopasdfghjklzxcvbnm', 10)(),
-      ingredients: 'dough,sauce,chicken,cheese',
-      steps: 'chicken,cheese,sauce on top of dough and bake'
-    }
-  ]
-}
+import recipeController from '../app/controllers/recipe.ts'
 
 export const schema = buildSchema(`
   type Step {
@@ -43,7 +14,7 @@ export const schema = buildSchema(`
 
   type Ingredient {
     measurement: Measurement
-    description: String
+    name: String
     notes: String
   }
 
@@ -57,7 +28,7 @@ export const schema = buildSchema(`
     avatar: String
   }
 
-  type Recipe2 {
+  type Recipe {
     uuid: String!
     title: String!
     quickSummary: String
@@ -68,25 +39,28 @@ export const schema = buildSchema(`
     notes: String
   }
 
-  type Recipe {
-    uuid: String!
-    name: String
-    ingredients: String
-    steps: String
+  input CreateRecipeInput {
+    title: String
+    quickSummary: String
+    notes: String
+  }
+
+  input UpdateRecipeInput {
+    title: String
+    quickSummary: String
+    notes: String
   }
 
   type Query {
-    hello: String
     recipes: [Recipe!]
+    recipe(id: String): Recipe
+  }
+
+  type Mutation {
+    createRecipe(input: CreateRecipeInput!): Recipe
+    updateRecipe(id: String!, input: UpdateRecipeInput!): Recipe
+    deleteRecipe(id: String!): Boolean
   }
 `)
 
-export const root = {
-  hello () {
-    return 'Hello World'
-  },
-
-  recipes () {
-    return store.recipes
-  }
-}
+export const root = { ...recipeController }
