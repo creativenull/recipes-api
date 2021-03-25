@@ -1,16 +1,8 @@
-import { Database, MongoDBConnector } from 'denodb'
-import { config } from 'dotenv'
-import Recipe from '../app/models/recipe.ts'
+import { MongoClient } from 'mongo'
+import { Database } from 'mongo_database'
 
-const env = config()
-const connector = new MongoDBConnector({
-  uri: env.DB_HOST,
-  database: env.DB_DATABASE
-  // username: env.DB_USERNAME,
-  // password: env.DB_PASSWORD
-})
-const db = new Database(connector)
-
-db.link([Recipe])
-
-export default db
+export async function getDbInstance (): Promise<Database> {
+  const client = new MongoClient()
+  await client.connect('mongodb://localhost:27017')
+  return client.database('recipesdb')
+}

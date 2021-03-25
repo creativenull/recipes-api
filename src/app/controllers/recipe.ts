@@ -1,44 +1,44 @@
-import store, { Recipe } from '../../gql/store.ts'
-import uuid from '../../gql/utils.ts'
+import { Recipe } from '../models/recipe.ts'
+import { getDbInstance } from '../../database/index.ts'
 
+interface RecipeSchema extends Recipe {
+  _id: { $oid: string }
+}
+
+const db = await getDbInstance()
+const recipes = db.collection<RecipeSchema>('recipes')
 const controller = {
-  recipes (): Recipe[] {
-    return store.recipes
+  async recipes (): Promise<RecipeSchema[] | undefined> {
+    const recipeList = await recipes.find().toArray()
+    return recipeList
   },
 
-  recipe (ctx: { id: string }): Recipe | null {
-    const results = store.recipes.filter((item) => item.uuid === ctx.id)
-    return results.length === 0 ? null : results[0]
+  async recipe (ctx: { id: string }): Promise<RecipeSchema | undefined> {
+    const recipe = await recipes.findOne({ _id: ctx.id })
+    return recipe
   },
 
-  createRecipe (ctx: { input: Recipe }): Recipe {
-    const recipe: Recipe = { ...ctx.input, uuid: uuid() }
-    store.recipes.push(recipe)
-    return store.recipes[store.recipes.length - 1]
+  async createRecipe (ctx: { input: Recipe }): Promise<RecipeSchema | undefined> {
+    const inserted = await recipes.insertOne({ ...ctx.input })
+    const result = await recipes.findOne({ _id: inserted })
+    return result
   },
 
-  updateRecipe (ctx: { id: string, input: Recipe }): Recipe | null {
-    const index = store.recipes.findIndex((item) => item.uuid === ctx.id)
-    if (index !== -1) {
-      store.recipes[index] = {
-        ...store.recipes[index],
-        ...ctx.input
-      }
+  // updateRecipe (ctx: { id: string, input: Recipe }): Recipe | undefined {
+    // const index = store.recipes.findIndex((item) => item.uuid === ctx.id)
+    // if (index !== -1) {
+    //   store.recipes[index] = {
+    //     ...store.recipes[index],
+    //     ...ctx.input
+    //   }
+    //   return store.recipes[index]
+    // }
+    // return null
+  // },
 
-      return store.recipes[index]
-    }
-
-    return null
-  },
-
-  deleteRecipe (ctx: { id: string }): boolean {
-    const index = store.recipes.findIndex((item) => item.uuid === ctx.id)
-    if (index !== -1) {
-      store.recipes.splice(index, 1)
-      return true
-    }
-
-    return false
+  async deleteRecipe (ctx: { id: string }): Promise<number> {
+    const deleteCount = await recipes.deleteOne({ _id: ctx.id })
+    return deleteCount
   }
 }
 

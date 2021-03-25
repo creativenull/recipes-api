@@ -29,7 +29,7 @@ export const schema = buildSchema(`
   }
 
   type Recipe {
-    uuid: String!
+    _id: ID!
     title: String!
     quickSummary: String
     author: Author!
@@ -58,8 +58,8 @@ export const schema = buildSchema(`
 
   type Mutation {
     createRecipe(input: CreateRecipeInput!): Recipe
-    updateRecipe(id: String!, input: UpdateRecipeInput!): Recipe
-    deleteRecipe(id: String!): Boolean
+    updateRecipe(id: ID!, input: UpdateRecipeInput!): Recipe
+    deleteRecipe(id: ID!): Int
   }
 `)
 
