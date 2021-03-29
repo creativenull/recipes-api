@@ -53,7 +53,7 @@ export const schema = buildSchema(`
 
   type Query {
     recipes: [Recipe!]
-    recipe(id: String): Recipe
+    recipe(id: ID!): Recipe
   }
 
   type Mutation {
