@@ -1,3 +1,4 @@
+import { Bson } from 'mongo'
 import { Recipe } from '../models/recipe.ts'
 import { getDbInstance } from '../../database/index.ts'
 
@@ -14,30 +15,26 @@ const controller = {
   },
 
   async recipe (ctx: { id: string }): Promise<RecipeSchema | undefined> {
-    const recipe = await recipes.findOne({ _id: ctx.id })
+    const recipe = await recipes.findOne({ _id: new Bson.ObjectId(ctx.id) })
     return recipe
   },
 
   async createRecipe (ctx: { input: Recipe }): Promise<RecipeSchema | undefined> {
     const inserted = await recipes.insertOne({ ...ctx.input })
-    const result = await recipes.findOne({ _id: inserted })
+    const result = await recipes.findOne({ _id: new Bson.ObjectId(inserted) })
     return result
   },
 
-  // updateRecipe (ctx: { id: string, input: Recipe }): Recipe | undefined {
-    // const index = store.recipes.findIndex((item) => item.uuid === ctx.id)
-    // if (index !== -1) {
-    //   store.recipes[index] = {
-    //     ...store.recipes[index],
-    //     ...ctx.input
-    //   }
-    //   return store.recipes[index]
-    // }
-    // return null
-  // },
+  async updateRecipe (ctx: { id: string, input: Recipe }): Promise<RecipeSchema | undefined> {
+    const _id = new Bson.ObjectId(ctx.id)
+    let recipe = await recipes.findOne({ _id }) as RecipeSchema
+    recipe = { ...recipe, ...ctx.input }
+    await recipes.updateOne({ _id }, { $set: { ...recipe } })
+    return recipe
+  },
 
   async deleteRecipe (ctx: { id: string }): Promise<number> {
-    const deleteCount = await recipes.deleteOne({ _id: ctx.id })
+    const deleteCount = await recipes.deleteOne({ _id: new Bson.ObjectId(ctx.id) })
     return deleteCount
   }
 }
