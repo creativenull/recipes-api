@@ -9,6 +9,7 @@
     "deno_gen": "https://deno.land/x/deno_faker@v1.0.3/mod.ts",
     "mongo": "https://deno.land/x/mongo@v0.22.0/mod.ts",
     "mongo_database": "https://deno.land/x/mongo@v0.22.0/src/database.ts",
-    "tinyhttp_cors": "https://cdn.skypack.dev/@tinyhttp/cors"
+    "tinyhttp_cors": "https://cdn.skypack.dev/@tinyhttp/cors",
+    "faker": "https://cdn.skypack.dev/faker"
   }
 }

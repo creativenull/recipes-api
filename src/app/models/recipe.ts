@@ -1,25 +1,25 @@
-interface Author {
+export interface Author {
   name: string
   avatar: string
 }
 
-interface Image {
+export interface Image {
   src: string
   caption: string
 }
 
-interface Measurement {
+export interface Measurement {
   amount: number
   unit: string
 }
 
-interface Ingredient {
+export interface Ingredient {
   measurement: Measurement
   name: string
   notes: string
 }
 
-interface Step {
+export interface Step {
   stepNum: number
   description: string
 }
