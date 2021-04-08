@@ -34,7 +34,7 @@ export const schema = buildSchema(`
     quickSummary: String
     author: Author!
     images: [Image!]
-    ingredient: [Ingredient!]
+    ingredients: [Ingredient!]
     steps: [Step!]
     notes: String
   }
