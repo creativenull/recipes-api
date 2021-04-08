@@ -35,17 +35,28 @@ const db = await getDbInstance()
 const recipes = db.collection<RecipeSchema>('recipes')
 const users = db.collection<UserSchema>('users')
 
+/**
+ * Generate a user data
+ *
+ * @returns {User}
+ */
 function makeUser (): User {
   return {
     name: faker.name.findName(),
     username: faker.name.firstName(),
     email: faker.internet.email(),
-    avatar: faker.image.avatar(),
+    avatar: faker.image.imageUrl(),
     aboutMe: faker.lorem.words(30),
     recipes: []
   }
 }
 
+/**
+ * Generate a list of images
+ *
+ * @param {number} amount
+ * @returns {Image[]}
+ */
 function makeImages (amount: number = 5): Image[] {
   const images: Image[] = []
   for (let i = 0; i < amount; i++) {
@@ -55,6 +66,12 @@ function makeImages (amount: number = 5): Image[] {
   return images
 }
 
+/**
+ * Generate a list of ingredients
+ *
+ * @param {number} amount
+ * @returns {Ingredient[]}
+ */
 function makeIngredients (amount: number = 5): Ingredient[] {
   const ingredients: Ingredient[] = []
   for (let i = 0; i < amount; i++) {
@@ -68,6 +85,12 @@ function makeIngredients (amount: number = 5): Ingredient[] {
   return ingredients
 }
 
+/**
+ * Generate sequences of steps
+ *
+ * @param {number} amount
+ * @returns {Step[]}
+ */
 function makeSteps (amount: number = 5): Step[] {
   const steps: Step[] = []
   for (let i = 0; i < amount; i++) {
@@ -77,9 +100,14 @@ function makeSteps (amount: number = 5): Step[] {
   return steps
 }
 
+/**
+ * Generate a recipe data
+ *
+ * @returns {Recipe}
+ */
 function makeRecipe (): Recipe {
   return {
-    title: faker.internet.color(),
+    title: faker.lorem.words(3),
     quickSummary: faker.lorem.words(20),
     featuredImg: {
       caption: faker.lorem.words(5),
@@ -92,15 +120,24 @@ function makeRecipe (): Recipe {
   }
 }
 
+/**
+ * Seed the database with the relevant fake data
+ *
+ * @return {Promise<void>}
+ */
 async function seed (): Promise<void> {
   const userAmount = 10
   const recipeAmount = 10
 
   console.log('Starting the seed')
 
-  await users.drop()
-  await recipes.drop()
+  try {
+    // Drop collections
+    await users.drop()
+    await recipes.drop()
+  } catch (e) {}
 
+  // Re-seed data
   for (let i = 0; i < userAmount; i++) {
     const userInfo = makeUser()
     const insertedUserId = await users.insertOne(userInfo)
