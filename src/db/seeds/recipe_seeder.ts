@@ -45,7 +45,7 @@ function makeUser (): User {
     name: faker.name.findName(),
     username: faker.name.firstName(),
     email: faker.internet.email(),
-    avatar: faker.image.imageUrl(),
+    avatar: 'https://picsum.photos/100',
     aboutMe: faker.lorem.words(30),
     recipes: []
   }
@@ -111,7 +111,7 @@ function makeRecipe (): Recipe {
     quickSummary: faker.lorem.words(20),
     featuredImg: {
       caption: faker.lorem.words(5),
-      src: faker.image.imageUrl()
+      src: 'https://picsum.photos/200'
     },
     images: makeImages(),
     ingredients: makeIngredients(),
