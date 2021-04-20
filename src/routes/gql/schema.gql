@@ -27,6 +27,7 @@ type Author {
 type Recipe {
   _id: ID!
   title: String!
+  featuredImg: Image!
   quickSummary: String
   author: Author!
   images: [Image!]

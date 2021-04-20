@@ -26,6 +26,7 @@ export interface Step {
 
 export interface Recipe {
   title: string
+  featuredImg: Image
   quickSummary: string
   author: Author
   images: Image[]
