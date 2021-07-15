@@ -2,11 +2,12 @@
   "imports": {
     "dotenv": "https://deno.land/x/dotenv/mod.ts",
     "faker": "https://cdn.skypack.dev/faker",
-    "graphql_deno": "https://deno.land/x/graphql_deno/mod.ts",
+    "graphql_deno": "https://deno.land/x/graphql_deno@v15.0.0/mod.ts",
     "mongo": "https://deno.land/x/mongo@v0.22.0/mod.ts",
     "mongo_database": "https://deno.land/x/mongo@v0.22.0/src/database.ts",
     "nanoid": "https://deno.land/x/nanoid@v3.0.0/mod.ts",
-    "oak": "https://deno.land/x/oak/mod.ts",
-    "oak_cors": "https://deno.land/x/cors/mod.ts"
+    "oak": "https://deno.land/x/oak@v7.7.0/mod.ts",
+    "oak_graphql": "https://deno.land/x/oak_graphql@0.6.2/mod.ts",
+    "oak_cors": "https://deno.land/x/cors@v1.2.2/mod.ts"
   }
 }

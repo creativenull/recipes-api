@@ -40,14 +40,14 @@ const users = db.collection<UserSchema>('users')
  *
  * @returns {User}
  */
-function makeUser (): User {
+function makeUser(): User {
   return {
     name: faker.name.findName(),
     username: faker.name.firstName(),
     email: faker.internet.email(),
     avatar: 'https://picsum.photos/100',
     aboutMe: faker.lorem.words(30),
-    recipes: []
+    recipes: [],
   }
 }
 
@@ -57,7 +57,7 @@ function makeUser (): User {
  * @param {number} amount
  * @returns {Image[]}
  */
-function makeImages (amount: number = 5): Image[] {
+function makeImages(amount: number = 5): Image[] {
   const images: Image[] = []
   for (let i = 0; i < amount; i++) {
     images.push({ caption: faker.lorem.words(5), src: faker.image.imageUrl() })
@@ -72,13 +72,13 @@ function makeImages (amount: number = 5): Image[] {
  * @param {number} amount
  * @returns {Ingredient[]}
  */
-function makeIngredients (amount: number = 5): Ingredient[] {
+function makeIngredients(amount: number = 5): Ingredient[] {
   const ingredients: Ingredient[] = []
   for (let i = 0; i < amount; i++) {
     ingredients.push({
       name: faker.lorem.words(2),
       measurement: { amount: faker.datatype.number(), unit: 'tbsp' },
-      notes: faker.lorem.words(5)
+      notes: faker.lorem.words(5),
     })
   }
 
@@ -91,7 +91,7 @@ function makeIngredients (amount: number = 5): Ingredient[] {
  * @param {number} amount
  * @returns {Step[]}
  */
-function makeSteps (amount: number = 5): Step[] {
+function makeSteps(amount: number = 5): Step[] {
   const steps: Step[] = []
   for (let i = 0; i < amount; i++) {
     steps.push({ stepNum: i + 1, description: faker.lorem.words(20) })
@@ -105,18 +105,18 @@ function makeSteps (amount: number = 5): Step[] {
  *
  * @returns {Recipe}
  */
-function makeRecipe (): Recipe {
+function makeRecipe(): Recipe {
   return {
     title: faker.lorem.words(3),
     quickSummary: faker.lorem.words(20),
     featuredImg: {
       caption: faker.lorem.words(5),
-      src: 'https://picsum.photos/200'
+      src: 'https://picsum.photos/200',
     },
     images: makeImages(),
     ingredients: makeIngredients(),
     steps: makeSteps(),
-    notes: faker.lorem.words(20)
+    notes: faker.lorem.words(20),
   }
 }
 
@@ -125,7 +125,7 @@ function makeRecipe (): Recipe {
  *
  * @return {Promise<void>}
  */
-async function seed (): Promise<void> {
+async function seed(): Promise<void> {
   const userAmount = 10
   const recipeAmount = 10
 
@@ -148,13 +148,20 @@ async function seed (): Promise<void> {
       // New recipe
       const insertedRecipeId = await recipes.insertOne({
         ...recipeInfo,
-        author: new Bson.ObjectId(insertedUserId)
+        author: new Bson.ObjectId(insertedUserId),
       } as Recipe)
 
       // Attach recipe to the user
-      const user = await users.findOne({ _id: new Bson.ObjectId(insertedUserId) }) as UserSchema
+      const user = (await users.findOne({
+        _id: new Bson.ObjectId(insertedUserId),
+      })) as UserSchema
       user.recipes.push(new Bson.ObjectId(insertedRecipeId))
-      await users.updateOne({ _id: new Bson.ObjectId(insertedUserId) }, { $set: { ...user } })
+      await users.updateOne(
+        { _id: new Bson.ObjectId(insertedUserId) },
+        {
+          $set: { ...user },
+        }
+      )
     }
   }
 
